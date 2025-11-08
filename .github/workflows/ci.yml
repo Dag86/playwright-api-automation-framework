@@ -1,10 +1,19 @@
 name: CI
 
+# Trigger the workflow on push/PR to main and release tags
 on:
   push:
     branches: [ main ]
+    tags: ['v*']  # Trigger on version tags
   pull_request:
     branches: [ main ]
+  # Allow manual trigger
+  workflow_dispatch:
+
+# Cancel any in-progress job or run
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-test:
@@ -12,20 +21,39 @@ jobs:
     strategy:
       matrix:
         node: [18, 20]
+      # Don't cancel other matrix jobs if one fails
+      fail-fast: false
     env:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+      NODE_ENV: test
+      # Add some fake credentials for testing
+      TEST_CLIENT_ID: ${{ secrets.TEST_CLIENT_ID || 'test-client' }}
+      TEST_CLIENT_SECRET: ${{ secrets.TEST_CLIENT_SECRET || 'test-secret' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Setup Node with caching
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
 
+      # Cache node_modules
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node }}-
+
+      # Install dependencies only if cache miss
       - name: Install deps
-        run: npm ci
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline --no-audit
 
       - name: Lint
         run: npm run lint
@@ -63,3 +91,37 @@ jobs:
         with:
           name: junit-${{ matrix.node }}
           path: reports/junit
+          
+      # Process test results
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Playwright Tests
+          path: reports/junit/playwright-results.xml
+          reporter: jest-junit
+          fail-on-error: false
+
+  # Add a deploy job for releases
+  deploy:
+    needs: build-test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      # Setup Node.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Create release
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
