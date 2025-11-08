@@ -1,0 +1,42 @@
+{
+  "name": "playwright-api-automation-framework",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare": "husky install",
+    "lint": "eslint . --ext .ts,.js",
+    "format": "prettier --write .",
+    "test": "playwright test",
+    "test:headed": "PWDEBUG=1 playwright test",
+    "test:report": "playwright show-report",
+    "test:ci": "playwright test --reporter=line,junit,allure-playwright",
+    "postman:run": "newman run postman/collections/reqres.postman_collection.json -e postman/environments/reqres.postman_environment.json --reporters cli,junit --reporter-junit-export reports/junit/newman-results.xml",
+    "contracts:validate": "tsx scripts/validate-contracts.ts",
+    "contracts:drift": "tsx scripts/contract-drift.ts",
+    "allure:serve": "allure serve reports/allure-results",
+    "allure:generate": "allure generate reports/allure-results -o reports/allure-report --clean",
+    "ci:full": "npm run lint && npm run contracts:validate && npm run test:ci && npm run postman:run && npm run allure:generate"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.48.2",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "allure-playwright": "^2.15.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.25",
+    "eslint": "^9.13.0",
+    "@typescript-eslint/parser": "^8.9.0",
+    "@typescript-eslint/eslint-plugin": "^8.9.0",
+    "husky": "^9.1.6",
+    "junit-report-builder": "^3.0.0",
+    "newman": "^6.2.1",
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

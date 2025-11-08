@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20]
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Contract validation
+        run: npm run contracts:validate
+
+      - name: Playwright tests (API only)
+        run: npm run test:ci
+
+      - name: Postman (Newman) suite
+        run: npm run postman:run
+
+      - name: Generate Allure report
+        if: always()
+        run: npm run allure:generate
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.node }}
+          path: reports/allure-results
+
+      - name: Upload Allure HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-html-${{ matrix.node }}
+          path: reports/allure-report
+
+      - name: Upload JUnit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-${{ matrix.node }}
+          path: reports/junit

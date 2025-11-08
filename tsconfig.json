@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node", "@playwright/test"],
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "allowJs": false,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@utils/*": ["utils/*"],
+      "@fixtures/*": ["fixtures/*"],
+      "@contracts/*": ["contracts/*"],
+      "@schemas/*": ["schemas/*"]
+    }
+  },
+  "include": ["**/*.ts"]
+}

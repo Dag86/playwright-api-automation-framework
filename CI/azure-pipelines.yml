@@ -1,0 +1,39 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Use Node.js'
+
+- script: npm ci
+  displayName: 'Install deps'
+
+- script: npm run lint
+  displayName: 'Lint'
+
+- script: npm run contracts:validate
+  displayName: 'Contract validation'
+
+- script: npm run test:ci
+  displayName: 'Playwright tests'
+
+- script: npm run postman:run
+  displayName: 'Postman (Newman)'
+
+- script: npm run allure:generate
+  displayName: 'Allure generate'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'reports/junit/**/*.xml'
+    testRunTitle: 'API Tests'

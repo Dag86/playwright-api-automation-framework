@@ -1,0 +1,59 @@
+{
+  "info": {
+    "name": "Reqres API Demo",
+    "_postman_id": "de7d3aa7-1234-4e6d-bbbb-111111111111",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login (200)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"eve.holt@reqres.in\",\"password\":\"cityslicka\"}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Users list page=1",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/users?page=1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
