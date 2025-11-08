@@ -26,9 +26,10 @@ jobs:
     env:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
       NODE_ENV: test
-      # Add some fake credentials for testing
-      TEST_CLIENT_ID: ${{ secrets.TEST_CLIENT_ID || 'test-client' }}
-      TEST_CLIENT_SECRET: ${{ secrets.TEST_CLIENT_SECRET || 'test-secret' }}
+      BASE_URL: 'https://reqres.in'
+      API_KEY: ${{ secrets.API_KEY }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,6 +67,10 @@ jobs:
 
       - name: Postman (Newman) suite
         run: npm run postman:run
+
+      - name: Install Allure CommandLine
+        if: always()
+        run: npm install -g allure-commandline
 
       - name: Generate Allure report
         if: always()

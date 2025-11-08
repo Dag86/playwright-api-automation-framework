@@ -7,6 +7,14 @@ import { test as base, APIRequestContext, request } from '@playwright/test';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+// Validate required environment variables
+const requiredEnvVars = ['BASE_URL', 'API_KEY', 'TEST_USER_EMAIL', 'TEST_USER_PASSWORD'];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    throw new Error(`Missing required environment variable: ${envVar}`);
+  }
+}
+
 /**
  * Custom fixtures for API testing
  */
@@ -30,7 +38,8 @@ export const test = base.extend<ApiFixtures>({
       baseURL,
       extraHTTPHeaders: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${process.env.API_KEY}`
       }
     }));
   }

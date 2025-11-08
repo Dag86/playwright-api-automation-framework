@@ -22,7 +22,7 @@ try {
   // --quiet exits with 1 if there are differences and 0 if none
   execSync('git diff --quiet -- contracts/openapi.json', { stdio: 'inherit' });
   console.log('[contracts] No drift detected (openapi.json unchanged vs HEAD).');
-} catch (_) {
+} catch {
   // If git diff exits with non-zero, changes were detected
   console.error('[contracts] Drift detected in contracts/openapi.json');
   process.exit(2); // Exit with code 2 to indicate contract drift

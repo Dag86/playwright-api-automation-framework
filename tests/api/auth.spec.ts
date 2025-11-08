@@ -16,8 +16,8 @@ test.describe('Auth - reqres demo', () => {
   test('should login successfully and return token', async ({ api }) => {
     const res = await api.post('/api/login', {
       data: { 
-        email: 'eve.holt@reqres.in', 
-        password: 'cityslicka'
+        email: process.env.TEST_USER_EMAIL,
+        password: process.env.TEST_USER_PASSWORD
       }
     });
     expect(res.status()).toBe(200);

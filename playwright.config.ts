@@ -13,8 +13,17 @@ export default defineConfig({
   },
   reporter: [
     ['list'],
-    ['junit', { outputFile: 'reports/junit/playwright-results.xml' }],
-    ['allure-playwright']
+    ['junit', {
+      outputFile: 'reports/junit/playwright-results.xml',
+      attachments: true,
+      embedAnnotationsAsProperties: true,
+      stripANSIControlSequences: true
+    }],
+    ['allure-playwright', {
+      detail: true,
+      outputFolder: 'reports/allure-results',
+      suiteTitle: false
+    }]
   ],
   use: {
     baseURL: process.env.BASE_URL || 'https://reqres.in',
