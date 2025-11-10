@@ -19,24 +19,24 @@
     "ci:full": "npm run lint && npm run contracts:validate && npm run test:ci && npm run postman:run && npm run allure:generate"
   },
   "dependencies": {
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.56.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "allure-playwright": "^2.15.0",
-    "axios": "^1.7.7",
-    "dotenv": "^16.4.5",
-    "zod": "^3.23.8"
+    "allure-playwright": "^3.4.2",
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/node": "^20.11.25",
-    "eslint": "^9.13.0",
-    "@typescript-eslint/parser": "^8.9.0",
-    "@typescript-eslint/eslint-plugin": "^8.9.0",
-    "husky": "^9.1.6",
-    "junit-report-builder": "^3.0.0",
+    "@types/node": "^24.10.0",
+    "eslint": "^9.39.1",
+    "@typescript-eslint/parser": "^8.46.3",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "husky": "^9.1.7",
+    "junit-report-builder": "^5.1.1",
     "newman": "^6.2.1",
-    "prettier": "^3.3.3",
-    "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }
